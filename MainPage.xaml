@@ -1,0 +1,103 @@
+<Page
+    x:Class="SimPhi.Uwp.MainPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:canvas="using:Microsoft.Graphics.Canvas.UI.Xaml"
+    Background="Black">
+
+    <Grid>
+        <!-- 游戏画面：照抄原版双画布，前景在 CanvasRenderTarget 里画好再合成到这里 -->
+        <canvas:CanvasAnimatedControl
+            x:Name="GameCanvas"
+            CreateResources="OnCreateResources"
+            Draw="OnDraw"
+            PointerPressed="OnPointerPressed"
+            PointerMoved="OnPointerMoved"
+            PointerReleased="OnPointerReleased"
+            PointerCanceled="OnPointerCanceled" />
+
+        <!-- 开始菜单（pre-UI）。正式视觉由你打磨，这里给个能用的骨架 -->
+        <Grid x:Name="StartPanel" Background="#D2101018" Visibility="Collapsed">
+            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                <TextBlock Text="Phigros Simulator"
+                           FontSize="40" Foreground="White"
+                           HorizontalAlignment="Center" />
+                <TextBlock Text="UWP · Win2D 移植"
+                           FontSize="14" Foreground="#80FFFFFF"
+                           HorizontalAlignment="Center" Margin="0,4,0,28" />
+                <Button Content="谱面库" Click="OnOpenLibrary"
+                        MinWidth="240" Margin="0,6" HorizontalAlignment="Stretch" />
+                <Button Content="内置测试谱" Click="OnTestChart"
+                        MinWidth="240" Margin="0,6" HorizontalAlignment="Stretch" />
+                <Button Content="设置" Click="OnOpenSettings"
+                        MinWidth="240" Margin="0,6" HorizontalAlignment="Stretch" />
+                <TextBlock x:Name="LoadingText"
+                           Foreground="#C0FFFFFF"
+                           HorizontalAlignment="Center" Margin="0,20,0,0"
+                           Visibility="Collapsed" Text="加载中..." />
+            </StackPanel>
+        </Grid>
+
+        <!-- 设置面板 -->
+        <Grid x:Name="SettingsPanel" Background="#E6101018" Visibility="Collapsed">
+            <ScrollViewer>
+                <StackPanel x:Name="SettingsList" Margin="24" MaxWidth="440" HorizontalAlignment="Center">
+                    <TextBlock Text="设置" FontSize="28" Foreground="White" Margin="0,0,0,12" />
+                    <ToggleSwitch Header="自动播放 (Autoplay)" Tag="Autoplay" Toggled="OnSettingToggled" />
+                    <ToggleSwitch Header="AP/FC 彩色判定线" Tag="LineColor" Toggled="OnSettingToggled" />
+                    <ToggleSwitch Header="显示 Acc" Tag="ShowAcc" Toggled="OnSettingToggled" />
+                    <ToggleSwitch Header="显示统计" Tag="ShowStat" Toggled="OnSettingToggled" />
+                    <ToggleSwitch Header="显示定位点" Tag="ShowPoint" Toggled="OnSettingToggled" />
+                    <ToggleSwitch Header="Early/Late 特效" Tag="ShowCE2" Toggled="OnSettingToggled" />
+                    <ToggleSwitch Header="打击反馈" Tag="Feedback" Toggled="OnSettingToggled" />
+                    <ToggleSwitch Header="背景模糊" Tag="ImageBlur" Toggled="OnSettingToggled" />
+                    <ToggleSwitch Header="过场动画" Tag="ShowTransition" Toggled="OnSettingToggled" />
+                    <TextBlock x:Name="OffsetLabel" Foreground="#C0FFFFFF" Margin="0,12,0,0" Text="音频偏移: 0 ms" />
+                    <Slider x:Name="OffsetSlider" Minimum="-400" Maximum="600" StepFrequency="5"
+                            ValueChanged="OnOffsetChanged" />
+                    <Button Content="返回" Click="OnSettingsBack" Margin="0,16,0,0" />
+                </StackPanel>
+            </ScrollViewer>
+        </Grid>
+
+        <!-- 谱面库（歌曲选择）-->
+        <Grid x:Name="LibraryPanel" Background="#F0101018" Visibility="Collapsed">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <Grid Grid.Row="0" Margin="20,16,20,8">
+                <TextBlock Text="谱面库" FontSize="28" Foreground="White" VerticalAlignment="Center" />
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                    <Button Content="导入 .pez" Click="OnImport" Margin="0,0,8,0" />
+                    <Button Content="返回" Click="OnLibraryBack" />
+                </StackPanel>
+            </Grid>
+            <GridView x:Name="ChartGrid" Grid.Row="1" Margin="12,0,12,12"
+                      IsItemClickEnabled="True" ItemClick="OnChartItemClick" SelectionMode="None">
+                <GridView.ItemTemplate>
+                    <DataTemplate>
+                        <Grid Width="190" Height="128" Margin="6">
+                            <Image Source="{Binding Cover}" Stretch="UniformToFill" />
+                            <Border VerticalAlignment="Bottom" Background="#B0000000" Padding="8,4">
+                                <StackPanel>
+                                    <TextBlock Text="{Binding Name}" Foreground="White" FontSize="14" TextTrimming="CharacterEllipsis" />
+                                    <TextBlock Text="{Binding Level}" Foreground="#C0FFFFFF" FontSize="11" TextTrimming="CharacterEllipsis" />
+                                </StackPanel>
+                            </Border>
+                        </Grid>
+                    </DataTemplate>
+                </GridView.ItemTemplate>
+            </GridView>
+            <TextBlock x:Name="LibraryEmpty" Grid.Row="1" Visibility="Collapsed"
+                       Text="谱面库是空的&#x0a;点「导入 .pez」添加谱面"
+                       TextAlignment="Center" Foreground="#80FFFFFF"
+                       HorizontalAlignment="Center" VerticalAlignment="Center" />
+        </Grid>
+
+        <!-- 播放时返回开始菜单 -->
+        <Button x:Name="MenuButton" Content="菜单" Click="OnMenu"
+                HorizontalAlignment="Right" VerticalAlignment="Top"
+                Margin="12" Visibility="Collapsed" />
+    </Grid>
+</Page>

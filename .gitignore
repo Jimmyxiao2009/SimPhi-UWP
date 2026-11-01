@@ -1,0 +1,15 @@
+
+# Private credentials and local output
+.env
+.env.local
+*.pfx
+*.p12
+*.key
+*.keystore
+*.jks
+local.properties
+**/bin/
+**/obj/
+node_modules/
+__pycache__/
+*.log

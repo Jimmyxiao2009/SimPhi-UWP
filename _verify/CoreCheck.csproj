@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- 仅用于在本机校验 Core 层能否以 C# 7 语法 + netstandard2.0 编译通过。
+       不进入 UWP 工程，不引用 Win2D/XAudio2。 -->
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <LangVersion>7.3</LangVersion>
+    <Nullable>disable</Nullable>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="..\Core\*.cs" />
+    <Compile Include="..\Game\*.cs" />
+    <Compile Include="..\Pec\*.cs" />
+    <Compile Include="..\Resource\TestChart.cs" />
+  </ItemGroup>
+
+</Project>
